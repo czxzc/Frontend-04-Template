@@ -22,12 +22,19 @@
     .red.light {
       background-color: red;
     }
+    button {
+      width: 80px;
+      height: 40px;
+      background: blue;
+      color: #fff;
+    }
   </style>
 </head>
 <body>
   <div class="green"></div>
   <div class="yellow"></div>
   <div class="red"></div>
+  <button id="next">next</button>
 
   <script>
     function removeLight() {
@@ -61,14 +68,24 @@
       });
     }
 
+    // 手动点击触发
+    function happen(e, eventName) {
+      return new Promise((resolve, reject) => {
+        e.addEventListener(eventName, resolve, {once:true});
+      })
+    }
+
     async function go() {
       while(true) {
         green();
-        await sleep(2000);
+        // await sleep(2000);
+        await happen(document.getElementById('next'), 'click');
         yellow();
-        await sleep(1000);
+        // await sleep(1000);
+        await happen(document.getElementById('next'), 'click');
         red();
-        await sleep(500);
+        // await sleep(500);
+        await happen(document.getElementById('next'), 'click');
       }
       
     }
