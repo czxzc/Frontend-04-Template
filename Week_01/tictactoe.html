@@ -69,8 +69,7 @@
     }
 
     function clone(pattern) {
-      // return JSON.parse(JSON.stringify(pattern));
-      return Object.create(pattern);
+      return JSON.parse(JSON.stringify(pattern));
     }
 
     function willWin(pattern, color) {
