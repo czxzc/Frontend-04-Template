@@ -30,6 +30,7 @@
       0, 0, 0,
       0, 0, 0
     ];
+    show();
 
     function show() {
       let board = document.getElementById('board');
@@ -37,7 +38,7 @@
       for(let i = 0; i < COUNT; i++ ) {
         for(let j = 0; j < COUNT; j++) {
           const $div = document.createElement('div');
-          $div.addEventListener('click', () => move(i, j));
+          $div.addEventListener('click', () => useMove(i, j));
           $div.classList.add('cell');
           $div.innerText =
             pattern[i*3+j] === 2 ? '×' :
@@ -48,20 +49,28 @@
       }
     }
 
-    show();
+    function computerMove() {
+      let choice = bestChoice(pattern, color);
+      if(choice.point) {
+        pattern[choice.point[0] * 3 + choice.point[1]] = color;
+      }
+      if(check(pattern, color)) {
+        alert(color === 2 ? '× is winner' : '○ is winner');
+      }
+      color = 3 - color;
+      show();
+    }
 
-    function move(x, y) {
+
+    function useMove(x, y) {
       if(pattern[x*3+y]) return;
       pattern[x*3+y] = color;
       if(check(pattern, color)) {
         alert(color === 2 ? '× is winner' : '○ is winner');
       }
-
       color = 3 - color;
-      console.log(bestChoice(pattern, color));
-
       show();
-      
+      computerMove(pattern, color);
       
       // if(willWin(pattern, color)) {
       //   console.log(color === 2 ? '× will win' : '○ will win');
@@ -69,8 +78,8 @@
     }
 
     function clone(pattern) {
-      return JSON.parse(JSON.stringify(pattern));
-      // return Object.create(pattern);
+      // return JSON.parse(JSON.stringify(pattern));
+      return Object.create(pattern);
     }
 
     function willWin(pattern, color) {
