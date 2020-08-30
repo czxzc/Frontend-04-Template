@@ -26,9 +26,9 @@
     let color = 1;
 
     let pattern = [
-      [0, 0, 0],
-      [0, 0, 0],
-      [0, 0, 0]
+      0, 0, 0,
+      0, 0, 0,
+      0, 0, 0
     ];
 
     function show() {
@@ -40,8 +40,8 @@
           $div.addEventListener('click', () => move(i, j));
           $div.classList.add('cell');
           $div.innerText =
-            pattern[i][j] === 2 ? '×' :
-            pattern[i][j] === 1 ? '○' : '';
+            pattern[i*3+j] === 2 ? '×' :
+            pattern[i*3+j] === 1 ? '○' : '';
           board.appendChild($div);
         }
         board.appendChild(document.createElement('br'));
@@ -51,8 +51,8 @@
     show();
 
     function move(x, y) {
-      if(pattern[x][y]) return;
-      pattern[x][y] = color;
+      if(pattern[x*3+y]) return;
+      pattern[x*3+y] = color;
       if(check(pattern, color)) {
         alert(color === 2 ? '× is winner' : '○ is winner');
       }
@@ -70,14 +70,15 @@
 
     function clone(pattern) {
       return JSON.parse(JSON.stringify(pattern));
+      // return Object.create(pattern);
     }
 
     function willWin(pattern, color) {
       for(let i = 0; i < COUNT; i++) {
         for (let j = 0; j < COUNT; j++) {
-          if(pattern[i][j]) continue;
+          if(pattern[i*3+j]) continue;
           let tmp = clone(pattern);
-          tmp[i][j] = color;
+          tmp[i*3+j] = color;
           if (check(tmp, color)) {
             return [i, j];
           }
@@ -99,9 +100,9 @@
       let point = null;
       outer: for (let i = 0; i < COUNT; i++) {
         for (let j = 0; j < COUNT; j++) {
-          if (pattern[i][j]) continue;
+          if (pattern[i*3+j]) continue;
           let tmp = clone(pattern);
-          tmp[i][j] = color;
+          tmp[i*3+j] = color;
           let r = bestChoice(tmp, 3-color).result;
 
           if (-r >= result) {
@@ -127,7 +128,7 @@
       for(let i = 0; i < COUNT; i++) {
         let win = true;
         for(let j = 0; j < COUNT; j++) {
-          if (pattern[i][j] !== color) {
+          if (pattern[i*3+j] !== color) {
             win = false;
           }
         }
@@ -138,7 +139,7 @@
       for(let i = 0; i < COUNT; i++) {
         let win = true;
         for(let j = 0; j < COUNT; j++) {
-          if (pattern[j][i] !== color) {
+          if (pattern[j*3+i] !== color) {
             win = false;
           }
         }
@@ -149,7 +150,7 @@
       {
         let win = true;
         for(let i = 0; i < COUNT; i++) {
-          if (pattern[i][i] !== color) {
+          if (pattern[i*3+i] !== color) {
             win = false;
           }
         }
@@ -160,7 +161,7 @@
       {
         let win = true;
         for(let i = 0; i < COUNT; i++) {
-          if (pattern[i][2-i] !== color) {
+          if (pattern[i*3+(2-i)] !== color) {
             win = false;
           }
         }
