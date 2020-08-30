@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TicTacToe小游戏</title>
+  <style>
+    .cell {
+      width: 100px;
+      height: 100px;
+      background-color: aquamarine;
+      display: inline-block;
+      border: 1px solid #fff;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 60px;
+      line-height: 100px;
+    }
+  </style>
+</head>
+<body>
+  <div id="board"></div>
+
+  <script>
+    const COUNT = 3; //棋盘的横纵格子数量
+    let color = 1;
+
+    let pattern = [
+      [0, 0, 0],
+      [0, 0, 0],
+      [0, 0, 0]
+    ];
+
+    function show() {
+      let board = document.getElementById('board');
+      board.innerHTML = '';
+      for(let i = 0; i < COUNT; i++ ) {
+        for(let j = 0; j < COUNT; j++) {
+          const $div = document.createElement('div');
+          $div.addEventListener('click', () => move(i, j));
+          $div.classList.add('cell');
+          $div.innerText =
+            pattern[i][j] === 2 ? '×' :
+            pattern[i][j] === 1 ? '○' : '';
+          board.appendChild($div);
+        }
+        board.appendChild(document.createElement('br'));
+      }
+    }
+
+    show();
+
+    function move(x, y) {
+      if(pattern[x][y]) return;
+      pattern[x][y] = color;
+      if(check(pattern, color)) {
+        alert(color === 2 ? '× is winner' : '○ is winner');
+      }
+
+      color = 3 - color;
+      console.log(bestChoice(pattern, color));
+
+      show();
+      
+      
+      // if(willWin(pattern, color)) {
+      //   console.log(color === 2 ? '× will win' : '○ will win');
+      // }
+    }
+
+    function clone(pattern) {
+      // return JSON.parse(JSON.stringify(pattern));
+      return Object.create(pattern);
+    }
+
+    function willWin(pattern, color) {
+      for(let i = 0; i < COUNT; i++) {
+        for (let j = 0; j < COUNT; j++) {
+          if(pattern[i][j]) continue;
+          let tmp = clone(pattern);
+          tmp[i][j] = color;
+          if (check(tmp, color)) {
+            return [i, j];
+          }
+        }
+      }
+      return null;
+    }
+
+    // result: 1 为赢， -1 为输， 0为和棋
+    function bestChoice(pattern, color) {
+      let p;
+      if(p = willWin(pattern, color)) {
+        return {
+          point: p,
+          result: 1
+        }
+      }
+      let result = -1;
+      let point = null;
+      outer: for (let i = 0; i < COUNT; i++) {
+        for (let j = 0; j < COUNT; j++) {
+          if (pattern[i][j]) continue;
+          let tmp = clone(pattern);
+          tmp[i][j] = color;
+          let r = bestChoice(tmp, 3-color).result;
+
+          if (-r >= result) {
+            result = -r;
+            point = [i, j];
+          }
+
+          if (result === 1) {
+            break outer;
+          }
+        }
+      }
+      return {
+        point,
+        result: point ? result : 0
+      }
+    }
+
+    
+
+    function check(pattern, color) {
+      
+      for(let i = 0; i < COUNT; i++) {
+        let win = true;
+        for(let j = 0; j < COUNT; j++) {
+          if (pattern[i][j] !== color) {
+            win = false;
+          }
+        }
+        if (win)
+          return true;
+      }
+
+      for(let i = 0; i < COUNT; i++) {
+        let win = true;
+        for(let j = 0; j < COUNT; j++) {
+          if (pattern[j][i] !== color) {
+            win = false;
+          }
+        }
+        if (win)
+          return true;
+      }
+
+      {
+        let win = true;
+        for(let i = 0; i < COUNT; i++) {
+          if (pattern[i][i] !== color) {
+            win = false;
+          }
+        }
+        if (win)
+            return true;
+      }
+
+      {
+        let win = true;
+        for(let i = 0; i < COUNT; i++) {
+          if (pattern[i][2-i] !== color) {
+            win = false;
+          }
+        }
+        if (win)
+            return true;
+      }
+
+      return false;
+      
+    }
+
+  </script>
+</body>
+</html>
