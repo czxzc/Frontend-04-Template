@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>红绿灯问题</title>
+  <style>
+    div {
+      background-color: grey;
+      display: inline-block;
+      margin: 30px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50px;
+    }
+    .green.light {
+      background-color: green;
+    }
+    .yellow.light {
+      background-color: yellow;
+    }
+    .red.light {
+      background-color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="green"></div>
+  <div class="yellow"></div>
+  <div class="red"></div>
+
+  <script>
+    function removeLight() {
+      let lights = document.getElementsByTagName('div');
+      for(let i = 0 ; i < lights.length; i++ ) {
+        lights[i].classList.remove('light');
+      }
+    }
+    function green() {
+      removeLight();
+      document.getElementsByClassName('green')[0].classList.add('light');
+    }
+
+    function yellow() {
+      removeLight();
+      document.getElementsByClassName('yellow')[0].classList.add('light');
+    }
+
+    function red() {
+      removeLight();
+      document.getElementsByClassName('red')[0].classList.add('light');
+    }
+
+    function go() {
+      green();
+      console.time();
+      setTimeout(function() {
+        console.timeEnd();
+        yellow();
+        console.time();
+        setTimeout(function(){
+          console.timeEnd();
+          red();
+          console.time();
+          setTimeout(function(){
+            console.timeEnd();
+            go();
+          }, 5000)
+        }, 2000)
+      }, 10000)
+    }
+
+    go();
+
+  </script>
+</body>
+</html>
