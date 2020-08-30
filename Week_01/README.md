@@ -64,17 +64,9 @@ check函数增加入参，变成纯函数；
 
 js的异步机制：
 
-- callback
-- promise
+- callback：回调地狱
+- promise： 链式调用
 - async/await ： 基于promise的语法支持和封装
-
-
-
-
-
-
-
-
 
 
 

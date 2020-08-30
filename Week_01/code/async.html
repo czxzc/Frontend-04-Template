@@ -61,17 +61,16 @@
       });
     }
 
-    function go() {
-      green();
-      sleep(3000).then(() => {
+    async function go() {
+      while(true) {
+        green();
+        await sleep(2000);
         yellow();
-        return sleep(2000);
-      }).then(() => {
+        await sleep(1000);
         red();
-        return sleep(1000);
-      }).then(() => {
-        go();
-      });
+        await sleep(500);
+      }
+      
     }
 
     go();
