@@ -51,23 +51,27 @@
       document.getElementsByClassName('red')[0].classList.add('light');
     }
 
+    function sleep(ms) {
+      console.time();
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          console.timeEnd();
+          resolve();
+        }, ms);
+      });
+    }
+
     function go() {
       green();
-      console.time();
-      setTimeout(function() {
-        console.timeEnd();
+      sleep(3000).then(() => {
         yellow();
-        console.time();
-        setTimeout(function(){
-          console.timeEnd();
-          red();
-          console.time();
-          setTimeout(function(){
-            console.timeEnd();
-            go();
-          }, 5000)
-        }, 2000)
-      }, 10000)
+        return sleep(2000);
+      }).then(() => {
+        red();
+        return sleep(1000);
+      }).then(() => {
+        go();
+      });
     }
 
     go();
