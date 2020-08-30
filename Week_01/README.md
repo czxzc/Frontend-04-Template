@@ -70,6 +70,44 @@ js的异步机制：
 
 
 
+generator与异步：
+
+- generator模拟asycn/await
+
+- async generator 
+
+  for await of
+
+   while(true)不带break的这种代码，在同步代码中基本不会出现，但是在异步代码中很常见，用于表示无限循环， 如操作系统的事件循环
+
+  ```js
+      function sleep(ms) {
+        console.time();
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            console.timeEnd();
+            resolve();
+          }, ms);
+        });
+      }    
+  
+  	async function* counter() {
+        let i = 0;
+        while(true) {
+          await sleep(1000);
+          yield i++;
+        }
+      }
+  
+      (async function(){
+        for await(let i of counter()) {
+          console.log(i);
+        }
+      })()
+  ```
+
+  
+
 问题：
 
 1. win为什么要设置在块级作用局中，重复赋值？
