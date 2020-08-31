@@ -20,14 +20,27 @@
   </style>
 </head>
 <body>
+  <button onclick="save()">保存</button>
+  <button onclick="clearAll()">清除</button>
   <div id="container"></div>
 
   <script>
     let mousedown = false;
     let clear = false;
-    let map = Array(10000).fill(0);
+    let map = localStorage.getItem('map') || Array(10000).fill(0);
 
     const container = document.getElementById('container');
+
+    function save() {
+      localStorage.setItem('map', map);
+    }
+    function clearAll() {
+      map = Array(10000).fill(0);
+      const cellList = document.getElementsByClassName('cell');
+      for(let i = 0; i < cellList.length; i++) {
+        cellList[i].style.backgroundColor = "";
+      }
+    }
 
     for(let i = 0; i < 100; i++) {
       for(let j = 0; j < 100; j++) {
