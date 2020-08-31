@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>寻路地图编辑器</title>
+  <style>
+    .cell{
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background-color: gray;
+      border-bottom: 1px solid #fff;
+      border-right: 1px solid #fff;
+    }
+    #container {
+      width: 701px;
+      line-height: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="container"></div>
+
+  <script>
+    let mousedown = false;
+    let clear = false;
+    let map = Array(10000).fill(0);
+
+    const container = document.getElementById('container');
+
+    for(let i = 0; i < 100; i++) {
+      for(let j = 0; j < 100; j++) {
+        let cell = document.createElement('div');
+        cell.classList.add('cell');
+        if(map[i*100+j] === 1) {
+          cell.style.backgroundColor = 'black';
+        }
+        cell.addEventListener('mousemove', () => {
+          if(mousedown) {
+            if(clear) {
+              map[i*100+j] = 0; // 逻辑上取消选中
+              cell.style.backgroundColor=""; // 视觉上取消选中
+            }else {
+              map[i*100+j] = 1; // 逻辑上选中
+              cell.style.backgroundColor="black"; // 视觉上选中
+            }
+          }
+        })
+        container.appendChild(cell);
+      }
+    }
+
+    document.addEventListener('mousedown', (e) => {
+      mousedown = true;
+      clear =( e.which === 3); // 判断按下的是否为右键
+    });
+    document.addEventListener('mouseup', () => {
+      mousedown = false;
+    });
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault(); // 防止点击右键弹出菜单
+    })
+  </script>
+</body>
+</html>
