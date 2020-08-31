@@ -27,18 +27,40 @@
   <script>
     let mousedown = false;
     let clear = false;
-    let map = localStorage.getItem('map') || Array(10000).fill(0);
+    let map = localStorage['map'] ? JSON.parse(localStorage['map']) : Array(10000).fill(0);
 
     const container = document.getElementById('container');
 
     function save() {
-      localStorage.setItem('map', map);
+      localStorage['map'] = JSON.stringify(map);
     }
     function clearAll() {
       map = Array(10000).fill(0);
       const cellList = document.getElementsByClassName('cell');
       for(let i = 0; i < cellList.length; i++) {
         cellList[i].style.backgroundColor = "";
+      }
+    }
+
+    function search(map, start, end) {
+      let queue = [start];
+      function insert(x, y) {
+        if(x < 0 || x > 100 || y < 0 || y> 100) return;
+        console.log(map[100*x + y]);
+        if(map[100*x + y]) return; // 有墙的点和已经搜索过得点
+        if(map[100*x + y] === 0 ) map[100*x + y] = 2; //打标记，已经搜索过的点
+        queue.push([x, y]);
+      }
+      while(queue.length) {
+        let [x, y] = queue.shift();
+        console.log([x,y]);
+        if(x === end[0] && y === end[1]) {
+          return true;
+        }
+        insert(x-1, y);
+        insert(x+1, y);
+        insert(x, y-1);
+        insert(x, y+1);
       }
     }
 
