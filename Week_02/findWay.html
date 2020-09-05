@@ -50,23 +50,42 @@
 
     async function search(map, start, end) {
       let queue = [start];
-      container.children[100*end[0]+end[1]].style.backgroundColor = 'red';
-      const insertQueue = async (x, y) => {
+      let table = Object.create(map);
+
+      container.children[100*end[0]+end[1]].style.backgroundColor = 'purple';
+      const insertQueue = async (x, y, pre) => {
         if (x < 0 || x > 100 || y < 0 || y > 100) return;
-        if (map[100*x+y]) return;
-        await sleep(30);
-        container.children[100*x+y].style.backgroundColor = 'lightgreen';
-        if (map[100*x+y] === 0) map[100*x+y] = 2;
+        if (table[x * 100 + y]) return;
+        await sleep(0);
+        container.children[100 * x + y].style.backgroundColor = 'lightgreen';
+        table[x * 100 + y] = pre;
         queue.push([x, y]);  
       }
       while(queue.length) {
-        const [x, y] = queue.shift();
-        if (x === end[0] && y === end[1]) return true;
-        await insertQueue(x-1, y);
-        await insertQueue(x+1, y);
-        await insertQueue(x, y-1);
-        await insertQueue(x, y+1);
+        let [x, y] = queue.shift();
+        if (x === end[0] && y === end[1]) {
+          let path = [];
+
+          while(x !== start[0] || y!== start[1]) {
+            const point = map[x * 100 + y];
+            path.push(point);
+            await sleep(0);
+            container.children[x* 100 + y].style.backgroundColor = 'red';
+            [x, y] = table[x * 100 + y];
+          }
+          return path;
+        }
+        await insertQueue(x-1, y, [x, y]);
+        await insertQueue(x+1, y, [x, y]);
+        await insertQueue(x, y-1, [x, y]);
+        await insertQueue(x, y+1, [x, y]);
+
+        await insertQueue(x-1, y-1, [x, y]);
+        await insertQueue(x+1, y+1, [x, y]);
+        await insertQueue(x+1, y-1, [x, y]);
+        await insertQueue(x-1, y+1, [x, y]);
       }
+      return null;
     }
 
     for(let i = 0; i < 100; i++) {
