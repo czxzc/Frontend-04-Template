@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>构建二叉堆</title>
+</head>
+<body>
+  <script>
+    
+    function buildHeap(arr) {
+      function downAjust(arr, parentIndex) {
+        // 先将父节点的值保存起来，不需要在每次交换的时候赋值
+        let parentVal = arr[parentIndex];
+        let child = parentIndex * 2 + 1;
+        while(child < arr.length) {
+          // child保存的是子节点中存放了最小值的数组下标
+          child = findMinChildIndex(parentIndex);
+          // 父节点的值比所有的子节点的值都小
+          if (arr[child] >= parentVal) break;
+          arr[parentIndex] = arr[child];
+          parentIndex = child;
+          child = parentIndex * 2 + 1;
+        }
+        arr[parentIndex] = parentVal;
+      }
+
+      function findChildrenIndex(parentIndex) {
+        return [parentIndex * 2 + 1, parentIndex * 2 + 2]
+      }
+
+      function findMinChildIndex(parentIndex) {
+        let [childIndex1, childIndex2] = findChildrenIndex(parentIndex);
+        let parentVal = arr[parentIndex];
+        let child1 = arr[childIndex1];
+        let child2 = arr[childIndex2];
+        if (typeof child1 == 'undefined' && typeof child2 == 'undefined') return parentIndex;
+        let minIndex = 
+          typeof child2 == 'undefined' ? child1 :
+          child1 < child2 ? childIndex1 : childIndex2;
+        return minIndex;
+      }
+      
+      const lastParent = arr.length / 2 -1;
+      for(let i = lastParent; i > 0; i--) {
+        downAjust(arr, i);
+      }
+
+      return arr;
+      
+    }
+  </script>
+</body>
+</html>
