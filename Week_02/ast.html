@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>使用LL算法构建AST</title>
+</head>
+<body>
+  <script>
+    var regexp = /([0-9.]+)|([ \t]+)|([\r\n]+)|(\+)|(\-)|(\*)|(\/)/g;
+    var dictionary = ['number', 'whitespace', 'lineTerminator','+','-','*','/'];
+
+    function* tokenize(source) {
+      let result = null;
+      while(true) {
+        let lastIndex = regexp.lastIndex;
+
+        result = regexp.exec(source);
+
+        if(!result) 
+          break;
+
+        let token = {
+          type: null,
+          val: null
+        }
+
+        if (regexp.lastIndex - lastIndex > result[0].length) 
+          throw new Error('存在非法字符');
+
+        for(let i = 1; i <= dictionary.length; i++) {
+          if(result[i]){
+            token.type = dictionary[i-1]
+          }
+        }
+        token.val = result[0];
+        yield(token);
+      }
+      yield({
+        type: 'EOF'
+      })
+    }
+
+    let source = [];
+
+    for(let token of tokenize('10 * 25 / 2')) {
+      if(token.type !== 'whitespace' && token.type !== 'lineTerminator') {
+        source.push(token);
+      }
+    }
+
+    function Expression(tokens) {
+
+    }
+
+    function AdditiveExpression(source) {
+
+    }
+
+    function MultiplicativeExpression(source) {
+      debugger;
+      if(source[0].type === 'number') {
+        let node = {
+          type: 'MultiplicativeExpression',
+          children: [source.shift()]
+        }
+        source.unshift(node);
+
+        return MultiplicativeExpression(source);
+      }
+
+      if(source[0].type === 'MultiplicativeExpression' && 
+         source[1].type && /(\*)|(\/)/.test(source[1].type)) {
+          let node = {
+            type: 'MultiplicativeExpression',
+            operation: source[1].type,
+            children: []
+          };
+          node.children.push(source.shift());
+          node.children.push(source.shift());
+          node.children.push(source.shift());
+          source.unshift(node);
+          return MultiplicativeExpression(source);
+      } 
+      
+      if (source[0].type === 'MultiplicativeExpression') {
+        return source[0];
+      }
+
+      return MultiplicativeExpression(source); //永远不执行
+
+    }
+
+    console.log(MultiplicativeExpression(source));
+
+    
+  </script>
+</body>
+</html>
