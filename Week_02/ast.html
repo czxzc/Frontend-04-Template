@@ -43,28 +43,68 @@
 
     let source = [];
 
-    for(let token of tokenize('10 * 25 / 2')) {
+    for(let token of tokenize('10 + 25 / 2')) {
       if(token.type !== 'whitespace' && token.type !== 'lineTerminator') {
         source.push(token);
       }
     }
 
     function Expression(tokens) {
-
+      if(source[0].type === 'AdditiveExpression' && source[1].type === 'EOF') {
+        let node = {
+          type: 'Expression',
+          children:[source.shift(), source.shift()]
+        }
+        source.unshift(node);
+        return node;
+      }
+      AdditiveExpression(source);
+      return Expression(source);
     }
 
     function AdditiveExpression(source) {
+      if(source[0].type === 'MultiplicativeExpression') {
+        let node = {
+          type: 'AdditiveExpression',
+          children: [source[0]]
+        }
+        source[0] = node;
 
+        return AdditiveExpression(source);
+      }
+
+      if(source[0].type === 'AdditiveExpression' && 
+         source[1].type && /(\+)|(\-)/.test(source[1].type)) {
+          let node = {
+            type: 'AdditiveExpression',
+            operation: source[1].type,
+            children: []
+          };
+          node.children.push(source.shift());
+          node.children.push(source.shift());
+          // 要先执行一次乘法的语法解析
+          MultiplicativeExpression(source);
+          node.children.push(source.shift());
+          source.unshift(node);
+          return AdditiveExpression(source);
+      } 
+      
+      if (source[0].type === 'AdditiveExpression') {
+        return source[0];
+      }
+
+      // 没有找到匹配的类型
+      MultiplicativeExpression(source);
+      return AdditiveExpression(source); //永远不执行
     }
 
     function MultiplicativeExpression(source) {
-      debugger;
       if(source[0].type === 'number') {
         let node = {
           type: 'MultiplicativeExpression',
-          children: [source.shift()]
+          children: [source[0]]
         }
-        source.unshift(node);
+        source[0] = node;
 
         return MultiplicativeExpression(source);
       }
@@ -91,7 +131,7 @@
 
     }
 
-    console.log(MultiplicativeExpression(source));
+    console.log(JSON.stringify(Expression(source)));
 
     
   </script>
