@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>字典树</title>
+</head>
+<body>
+  <script>
+    let $ = Symbol('$');
+    class Tree {
+      constructor() {
+        this.root = Object.create(null);
+      }
+
+      insert(word) {
+        let node = this.root;
+        for(let c of word) {
+          if(!node[c]) {
+            node[c] = Object.create(null);
+          }
+          
+          node = node[c];
+        }
+        if(!($ in node)) 
+          node[$] = 0;
+        node[$] ++;
+      }
+
+      // 查找出现次数最多的字符串
+      findMost() {
+        let maxWord = '';
+        let maxCount = 0;
+        let visit = (node, word) => {
+          if(node[$] && node[$] > maxCount) {
+            maxCount = node[$];
+            maxWord = word;
+          }
+          for(let p in node) {
+            visit(node[p], word + p);
+          }
+        }
+        visit(this.root, '');
+        console.log(maxWord, maxCount);
+      }
+    }
+
+    function randomWord(length) {
+      let s = '';
+      for(let i = 0; i < length; i++) {
+        s += String.fromCharCode(Math.random() * 26 + 'a'.charCodeAt(0));
+      }
+      return s;
+    }
+
+    const tree = new Tree();
+
+    for(let i = 0; i < 10000; i++) {
+      tree.insert(randomWord(4));
+    }
+  </script>
+</body>
+</html>
