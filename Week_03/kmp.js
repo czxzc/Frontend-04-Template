@@ -21,7 +21,25 @@ function kmp(source, pattern) {
     }
   }
 
-  console.log(table);
+  {
+    let i = 0, j = 0;
+
+    while(i < source.length) {
+      if(source[i] === pattern[j]) {
+        i++, j++;
+      } else {
+        if (j > 0) {
+          j = table[j];
+        } else {
+          i++;
+        }
+      }
+      if(j == pattern.length) return true;
+    }
+    return false;
+
+  }
+
 }
 
-kmp('', 'aabaaac');
+console.log(kmp('abcdabce', 'abce'));
