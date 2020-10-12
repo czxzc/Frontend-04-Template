@@ -7,27 +7,30 @@
 </head>
 <body>
   <script>
+    let callbacks = [];
     let object = {
       a: 1,
       b: 2
     };
 
     let po = reactive(object);
-    console.log('=============================');
-    console.log(po.a=44);
-    console.log('=============================');
-    console.log(object.a);
-    console.log('=============================');
-    console.log(po.x=2);
-    console.log('=============================');
-    console.log(object.x);
+
+    effect(() => {
+      console.log('effect===', po.a);
+    })
+
+    function effect(callback) {
+      callbacks.push(callback);
+    }
 
 
     function reactive(object) {
       return new Proxy(object, {
         set(obj, prop, val) {
           obj[prop] = val;
-          console.log(obj, prop, val);
+          for(let callback of callbacks){
+            callback();
+          }
           return obj[prop];
         },
         get(obj, prop){
