@@ -85,3 +85,24 @@ wildcard: ab*c?d*abc*a?d
 
 
 思考题：是否可以用带问号的kmp算法替代正则来实现wildcard算法？
+
+
+
+# proxy与双向绑定
+
+### proxy的基本用法
+
+应用了proxy的代码会导致预期性变差，proxy是专门为底层库设计的一个特性。
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy
+
+proxy的get和set与普通对象的getter和setter的区别：即使对象上不存在的属性，proxy的get和set也可以监听到。
+
+
+
+### 模仿vue的reactive实现原理
+
+1.  定义reactive函数，返回用new proxy包装过得对象；
+2.  定义粗糙版的effect，有严重的性能问题，因为callbacks是一个全局的数组，如果给100个对象设置了100了effect，每次执行都会把所有的回调函数执行一遍，就会执行1万遍
+3. effect只有在对应变量变化时，才触发函数的调用，问题：callback调用了两次
+
