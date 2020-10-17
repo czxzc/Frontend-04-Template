@@ -10,15 +10,19 @@
 
   <script>
     const $draggable = document.getElementById('draggable');
+
+    let moveX = 0, moveY = 0;
     $draggable.addEventListener('mousedown', (event) => {
       const startX = event.clientX, startY = event.clientY;
-      let up = () => {
+      let up = (event) => {
+        moveX = moveX + event.clientX - startX;
+        moveY = moveY + event.clientY - startY;
         document.removeEventListener('mousemove', move);
         document.removeEventListener('mouseup', up);
       };
       let move = (event) => {
         console.log('event: ', event);
-        $draggable.style.transform = `translate(${event.clientX - startX}px, ${event.clientY - startY}px)`;
+        $draggable.style.transform = `translate(${moveX + event.clientX - startX}px, ${moveY + event.clientY - startY}px)`;
       };
       document.addEventListener('mousemove', move);
       document.addEventListener('mouseup', up);
