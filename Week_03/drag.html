@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>拖拽</title>
+</head>
+<body>
+  <div id="draggable" style="height: 100px; width: 100px; background-color:pink"></div>
+
+  <script>
+    document.getElementById('draggable').addEventListener('mousedown', (event) => {
+      let up = () => {
+        document.removeEventListener('mousemove', move);
+        document.removeEventListener('mouseup', up);
+      };
+      let move = (event) => {
+        console.log('event: ', event);
+      };
+      document.addEventListener('mousemove', move);
+      document.addEventListener('mouseup', up);
+    });
+  </script>
+</body>
+</html>
