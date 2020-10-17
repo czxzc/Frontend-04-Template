@@ -9,13 +9,15 @@
   <div id="draggable" style="height: 100px; width: 100px; background-color:pink"></div>
 
   <script>
-    document.getElementById('draggable').addEventListener('mousedown', (event) => {
+    const $draggable = document.getElementById('draggable');
+    $draggable.addEventListener('mousedown', (event) => {
       let up = () => {
         document.removeEventListener('mousemove', move);
         document.removeEventListener('mouseup', up);
       };
       let move = (event) => {
         console.log('event: ', event);
+        $draggable.style.transform = `translate(${event.clientX}px, ${event.clientY}px)`;
       };
       document.addEventListener('mousemove', move);
       document.addEventListener('mouseup', up);
