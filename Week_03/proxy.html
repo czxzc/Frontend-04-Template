@@ -11,15 +11,17 @@
 
     let usedReactivties = [];
 
+    let reactivties = new Map();
+
     let object = {
-      a: 1,
+      a: {x: 1},
       b: 2
     };
 
     let po = reactive(object);
 
     effect(() => {
-      console.log('effect===', po.a);
+      console.log('effect===', po.a.x);
     })
 
     function effect(callback) {
@@ -41,7 +43,8 @@
 
 
     function reactive(object) {
-      return new Proxy(object, {
+      if(reactivties.has(object)) return reactivties.get(object);
+      let proxy = new Proxy(object, {
         set(obj, prop, val) {
           obj[prop] = val;
           if(callbacks.has(obj) && callbacks.get(obj).has(prop)) {
@@ -56,10 +59,14 @@
           console.log(obj, prop);
           // 监听调用了哪些变量
           usedReactivties.push([obj, prop]);
+          if(typeof obj[prop] === 'object') {
+            return reactive(obj[prop]);
+          }
           return obj[prop];
         }
-        
-      })
+      });
+      reactivties.set(object, proxy);
+      return proxy;
     }
   </script>
 </body>

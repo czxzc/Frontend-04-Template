@@ -104,5 +104,6 @@ proxy的get和set与普通对象的getter和setter的区别：即使对象上不
 
 1.  定义reactive函数，返回用new proxy包装过得对象；
 2.  定义粗糙版的effect，有严重的性能问题，因为callbacks是一个全局的数组，如果给100个对象设置了100了effect，每次执行都会把所有的回调函数执行一遍，就会执行1万遍
-3. effect只有在对应变量变化时，才触发函数的调用，问题：callback调用了两次
+3. effect只有在对应变量变化时，才触发函数的调用，问题： 监听不到po.a.b
+4.  优化reactive，<font color="red">为什么要缓存reactive生成的proxy？</font>
 
