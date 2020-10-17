@@ -11,13 +11,14 @@
   <script>
     const $draggable = document.getElementById('draggable');
     $draggable.addEventListener('mousedown', (event) => {
+      const startX = event.clientX, startY = event.clientY;
       let up = () => {
         document.removeEventListener('mousemove', move);
         document.removeEventListener('mouseup', up);
       };
       let move = (event) => {
         console.log('event: ', event);
-        $draggable.style.transform = `translate(${event.clientX}px, ${event.clientY}px)`;
+        $draggable.style.transform = `translate(${event.clientX - startX}px, ${event.clientY - startY}px)`;
       };
       document.addEventListener('mousemove', move);
       document.addEventListener('mouseup', up);
