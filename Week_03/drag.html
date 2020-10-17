@@ -6,7 +6,30 @@
   <title>拖拽</title>
 </head>
 <body>
-  <div id="draggable" style="height: 100px; width: 100px; background-color:pink"></div>
+  <div id="container">
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+    文字 文字 文字 文字 文字 文字 文字 文字
+  </div>
+  <div id="draggable" style="display: inline-block; height: 100px; width: 100px; background-color:pink"></div>
 
   <script>
     const $draggable = document.getElementById('draggable');
@@ -21,12 +44,42 @@
         document.removeEventListener('mouseup', up);
       };
       let move = (event) => {
-        console.log('event: ', event);
-        $draggable.style.transform = `translate(${moveX + event.clientX - startX}px, ${moveY + event.clientY - startY}px)`;
+        // $draggable.style.transform = `translate(${moveX + event.clientX - startX}px, ${moveY + event.clientY - startY}px)`;
+        let point = getNearestPoint(event.clientX, event.clientY);
+        point.insertNode($draggable); // 直接插入，不需要移除之前的$draggable，默认会进行移除操作
       };
       document.addEventListener('mousemove', move);
       document.addEventListener('mouseup', up);
     });
+
+    const container = document.getElementById('container');
+
+    let ranges = [];
+    for(let i = 0; i < container.childNodes[0].textContent.length; i++) {
+      let range = document.createRange();
+      range.setStart(container.childNodes[0], i);
+      range.setEnd(container.childNodes[0], i);
+      // console.log(range.getBoundingClientRect)
+      ranges.push(range);
+    }
+
+    function getNearestPoint(x, y) {
+      let min = Infinity;
+      let point;
+
+      for(let i = 0; i < ranges.length; i++) {
+        let rect = ranges[i].getBoundingClientRect(); // 要在这里获取getBoundingClientRect
+        let distance = (rect.x - x) ** 2 + (rect.y - y) ** 2; // 比较距离的大小，不开根号没有影响
+        if(distance < min) {
+          min = distance;
+          point = ranges[i];
+        }
+      }
+      return point;
+    }
+
+    // 去除鼠标移动选中文字的效果
+    document.addEventListener('selectstart', (e) => e.preventDefault());
   </script>
 </body>
 </html>
