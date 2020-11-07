@@ -111,3 +111,12 @@ generator与异步：
 问题：
 
 1. win为什么要设置在块级作用局中，重复赋值？
+
+
+https://github.com/GeekUniversity/Frontend-04-Template
+交作业模板：
+#学号: G20200447040023
+#姓名: 朱淳
+#班级: 1班
+#小组: 2组
+#作业&总结链接: https://github.com/czxzc/Frontend-04-Template/tree/master/Week_02
